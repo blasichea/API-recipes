@@ -1,0 +1,11 @@
+{
+	"type": "mysql",
+	"host": "localhost",
+	"port": 3306,
+	"username": "puzzle",
+	"password": "Puzzle_2020",
+	"database": "test",
+	"entities": ["src/database/entity/*.js"],
+	"logging": true,
+	"synchronize": true
+}
