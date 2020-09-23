@@ -5,8 +5,8 @@ import {User} from "./user";
 @Entity()
 export class Recipe {
 
-	@PrimaryGeneratedColumn()
-	id: number;
+	@PrimaryGeneratedColumn("uuid")
+	id: string;
 
 	@Column()
 	name: string;
@@ -17,9 +17,9 @@ export class Recipe {
 	@Column()
 	ingredients: string;
 
-	@ManyToOne(type => Category, category => category.recipes)
+	@ManyToOne(type => Category, category => category.recipes, {cascade: true})
 	category: Category;
 
-	@ManyToOne(type => User, user => user.recipes)
+	@ManyToOne(type => User, user => user.recipes, {cascade: true})
 	user: User;
 }

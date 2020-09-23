@@ -15,7 +15,7 @@ export = {
 		}
 	},
 	Mutation: {
-		signup: async (_, {input}) => {
+		signUp: async (_, {input}) => {
 			const userRepository = getRepository(User);
 			try {
 				const user = await userRepository.findOne({email: input.email});
