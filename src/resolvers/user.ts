@@ -42,7 +42,11 @@ export = {
 				if (!validPassword) {
 					throw new Error('Incorrect Password');
 				}
-				const token = jwt.sign({email: user.email}, process.env.JWT_KEY || "jwtkey", {expiresIn: '12h'});
+				const token = jwt.sign(
+					{email: user.email, id: user.id},
+					process.env.JWT_KEY || "jwtkey",
+					{expiresIn: '12h'}
+				);
 				return {token};
 			} catch (error) {
 				console.log(error);
