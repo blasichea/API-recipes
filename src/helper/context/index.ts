@@ -9,7 +9,7 @@ export default function verifyUser (req: any) {
 			if (!payload) {
 				throw new Error('Verify tocken failed');
 			}
-			return {mail: payload.email, id: payload.id};
+			return {email: payload.email, userId: payload.id};
 		}
 	} catch (error) {
 		console.log(error);
