@@ -11,7 +11,6 @@ export = {
 		getRecipes: combineResolvers(isAuthenticated, async () => {
 			try {
 				const result = await getRepository(Recipe).find({relations:["category", "user"]})
-				console.log(result);
 				return result;
 			} catch (error) {
 				console.log(error);
@@ -32,8 +31,7 @@ export = {
 		}),
 		getMyRecipes: combineResolvers(isAuthenticated, async (_, __, {userId}) => {
 			try {
-				const user = await getRepository(User).findOne(userId, {relations:["recipes"]});
-				const recipes = user.recipes;
+				const recipes = await getRepository(Recipe).find({user: userId});
 				return recipes;
 			} catch (error) {
 				console.log(error);

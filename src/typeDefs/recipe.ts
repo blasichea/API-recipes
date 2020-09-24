@@ -8,8 +8,8 @@ export const recipeTypeDefs = gql`
 	}
 
 	extend type Mutation {
-		createRecipe(input: createRecipeInput): Recipe
-		updateRecipe(id: String!, input: updateRecipeInput): Recipe
+		createRecipe(input: createRecipeInput!): Recipe
+		updateRecipe(id: String!, input: updateRecipeInput!): Recipe
 		deleteRecipe(id: String!): Recipe
 	}
 
