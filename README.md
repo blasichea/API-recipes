@@ -10,7 +10,8 @@
 * * *
 
 ## Configurar
-Para configurar debemos completar los datos correspondientes en el archivo **".env"**
+Para configurar, en el archivo **".env"** se encuentran disponibles el puerto donde estará disponible el servidor y la clave secreta de JWT.
+Luego en el archivo **"ormconfig.json"** se puede configurar la base de datos.
 
 * * *
 
@@ -23,3 +24,7 @@ Para configurar debemos completar los datos correspondientes en el archivo **".e
 ## Ejecutar
 
 		npm start
+
+## URL
+
+## https://api-allrecipes.herokuapp.com/
