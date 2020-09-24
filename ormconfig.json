@@ -1,10 +1,10 @@
 {
 	"type": "mysql",
-	"host": "localhost",
+	"host": "remotemysql.com",
 	"port": 3306,
-	"username": "puzzle",
-	"password": "Puzzle_2020",
-	"database": "test",
+	"username": "SUzhgRuhVX",
+	"password": "avILwyefUW",
+	"database": "SUzhgRuhVX",
 	"entities": ["src/entity/*.js"],
 	"logging": true,
 	"synchronize": true
