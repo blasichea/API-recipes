@@ -31,6 +31,6 @@ export const userTypeDefs = gql`
 		name: String!
 		email: String!
 		password: String!
-		recipes: [Recipe!]
+		recipes: [Recipe!]!
 	}
 `;
