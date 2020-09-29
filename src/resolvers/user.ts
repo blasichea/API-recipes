@@ -1,18 +1,31 @@
 import {getRepository} from "typeorm";
+import {combineResolvers} from "graphql-resolvers";
 import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcryptjs";
 import {User} from "../entity/user";
+import { isAuthenticated } from "./middleware";
+import { compareIdInt } from "../helper/compare";
 
 export = {
 	Query: {
-		users: () => {
-			console.log("Find users");
-			return getRepository(User).find();
-		},
-		user: (_, {id}) => {
-			console.log("find one user");
-			return getRepository(User).findOne(id);
-		}
+		getUsers: combineResolvers(isAuthenticated, async (_, {skip = 0, limit = 10}) => {
+			try {
+				const users = await getRepository(User).find();
+				return users.sort(compareIdInt).slice(skip, skip+limit);
+			} catch (error) {
+				console.log(error);
+				throw(error);
+			}
+		}),
+		getUser: combineResolvers(isAuthenticated, async (_, {id}) => {
+			try {
+				const user = await getRepository(User).findOne(id);
+				return user;
+			} catch (error) {
+				console.log(error);
+				throw(error);
+			}
+		})
 	},
 	Mutation: {
 		signUp: async (_, {input}) => {

@@ -2,14 +2,14 @@ import {getRepository} from "typeorm";
 import {combineResolvers} from "graphql-resolvers";
 import {isAuthenticated} from "./middleware";
 import {Category} from "../entity/category";
-import { categoryTypeDefs } from "../typeDefs/category";
+import { compareIdInt } from "../helper/compare";
 
 export = {
 	Query: {
-		getCategories: combineResolvers(isAuthenticated, async () => {
+		getCategories: combineResolvers(isAuthenticated, async (_, {skip = 0, limit = 10}) => {
 			try {
 				const result = await getRepository(Category).find({relations: ["recipes"]});
-				return result;
+				return result.sort(compareIdInt).slice(skip, skip+limit);
 			} catch (error) {
 				console.log(error);
 				throw error;

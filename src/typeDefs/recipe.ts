@@ -2,9 +2,9 @@ import {gql} from "apollo-server-express";
 
 export const recipeTypeDefs = gql`
 	extend type Query {
-		getRecipes: [Recipe!]
+		getRecipes(skip: Int, limit:Int): [Recipe!]
 		getOneRecipe(id: String!): Recipe
-		getMyRecipes: [Recipe!]
+		getMyRecipes(skip: Int, limit: Int): [Recipe!]
 	}
 
 	extend type Mutation {

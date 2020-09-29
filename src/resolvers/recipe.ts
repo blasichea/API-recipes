@@ -1,17 +1,15 @@
 import {getRepository} from "typeorm";
 import {combineResolvers} from "graphql-resolvers";
 import {Recipe} from "../entity/recipe";
-import {Category} from "../entity/category";
-import {User} from "../entity/user";
 import {isAuthenticated, isMyRecipe} from "./middleware";
-import { recipeTypeDefs } from "../typeDefs/recipe";
+import { compareIdString } from "../helper/compare";
 
 export = {
 	Query: {
-		getRecipes: combineResolvers(isAuthenticated, async () => {
+		getRecipes: combineResolvers(isAuthenticated, async (_, {skip = 0, limit = 10}) => {
 			try {
 				const result = await getRepository(Recipe).find({relations:["category", "user"]})
-				return result;
+				return result.sort(compareIdString).slice(skip, skip+limit);
 			} catch (error) {
 				console.log(error);
 				throw error;
@@ -29,10 +27,10 @@ export = {
 				throw error;
 			}
 		}),
-		getMyRecipes: combineResolvers(isAuthenticated, async (_, __, {userId}) => {
+		getMyRecipes: combineResolvers(isAuthenticated, async (_, {skip = 0, limit = 10}, {userId}) => {
 			try {
 				const recipes = await getRepository(Recipe).find({user: userId});
-				return recipes;
+				return recipes.sort(compareIdString).slice(skip, skip+limit);
 			} catch (error) {
 				console.log(error);
 				throw error;

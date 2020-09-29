@@ -2,7 +2,7 @@ import {gql} from "apollo-server-express";
 
 export const categoryTypeDefs = gql`
 	extend type Query {
-		getCategories: [Category!]
+		getCategories(skip: Int, limit: Int): [Category!]
 		getOneCategory(id: ID!): Category
 	}
 
