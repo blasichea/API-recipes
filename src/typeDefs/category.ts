@@ -2,8 +2,18 @@ import {gql} from "apollo-server-express";
 
 export const categoryTypeDefs = gql`
 	extend type Query {
-		getCategories: [Category!]
+		getCategories(cursor: Int, limit: Int): CategoryFeed!
 		getOneCategory(id: ID!): Category
+	}
+
+	type CategoryFeed {
+		categoryFeed: [Category!]
+		pageInfo: PageInfoCategory!
+	}
+
+	type PageInfoCategory {
+		nextPageCursor: Int
+		hasNextPage: Boolean
 	}
 
 	extend type Mutation {

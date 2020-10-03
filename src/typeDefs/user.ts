@@ -2,8 +2,18 @@ import {gql} from "apollo-server-express";
 
 export const userTypeDefs = gql`
 	extend type Query {
-		getUsers(cursor: Int, limit: Int): [User!]
+		getUsers(cursor: Int, limit: Int): UserFeed!
 		getUser(id:ID!): User
+	}
+
+	type UserFeed {
+		userFeed: [User!]
+		pageInfo: PageInfoUser!
+	}
+
+	type PageInfoUser {
+		nextPageCursor: Int
+		hasNextPage: Boolean
 	}
 
 	extend type Mutation {

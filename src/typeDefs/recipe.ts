@@ -2,9 +2,19 @@ import {gql} from "apollo-server-express";
 
 export const recipeTypeDefs = gql`
 	extend type Query {
-		getRecipes: [Recipe!]
+		getRecipes(cursor: String, limit: Int): RecipeFeed!
 		getOneRecipe(id: String!): Recipe
-		getMyRecipes: [Recipe!]
+		getMyRecipes(cursor: String, limit: Int): RecipeFeed!
+	}
+
+	type RecipeFeed {
+		recipeFeed: [Recipe!]
+		pageInfo: PageInfoRecipe!
+	}
+
+	type PageInfoRecipe {
+		nextPageCursor: String
+		hasNextPage: Boolean
 	}
 
 	extend type Mutation {

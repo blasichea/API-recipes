@@ -1,17 +1,30 @@
 import {getRepository} from "typeorm";
 import {combineResolvers} from "graphql-resolvers";
 import {Recipe} from "../entity/recipe";
-import {Category} from "../entity/category";
-import {User} from "../entity/user";
 import {isAuthenticated, isMyRecipe} from "./middleware";
-import { recipeTypeDefs } from "../typeDefs/recipe";
+import { compareIdString } from "../helper/compare";
 
 export = {
 	Query: {
-		getRecipes: combineResolvers(isAuthenticated, async () => {
+		getRecipes: combineResolvers(isAuthenticated, async (_, {cursor, limit = 10}) => {
 			try {
-				const result = await getRepository(Recipe).find({relations:["category", "user"]})
-				return result;
+				let query = {
+					take: limit + 1,
+					relations:["category", "user"]
+				}
+				if (cursor) {
+					query['Recipe'] = {where: `id > ${cursor}`};
+				}
+				let recipes = (await getRepository(Recipe).find(query)).sort(compareIdString);
+				const hasNextPage = recipes.length > limit;
+				recipes = hasNextPage ? recipes.slice(0, -1) : recipes;
+				return {
+					recipeFeed: recipes,
+					pageInfo: {
+						nextPageCursor: hasNextPage ? recipes[recipes.length -1].id : null,
+						hasNextPage
+					}
+				};
 			} catch (error) {
 				console.log(error);
 				throw error;
@@ -29,10 +42,25 @@ export = {
 				throw error;
 			}
 		}),
-		getMyRecipes: combineResolvers(isAuthenticated, async (_, __, {userId}) => {
+		getMyRecipes: combineResolvers(isAuthenticated, async (_, {cursor, limit = 10}, {userId}) => {
 			try {
-				const recipes = await getRepository(Recipe).find({user: userId});
-				return recipes;
+				let query = {
+					user: userId,
+					take: limit + 1
+				}
+				if (cursor) {
+					query['Recipe'] = {where: `id > ${cursor}`};
+				}
+				let recipes = (await getRepository(Recipe).find(query)).sort(compareIdString);
+				const hasNextPage = recipes.length > limit;
+				recipes = hasNextPage ? recipes.slice(0, -1) : recipes;
+				return {
+					recipeFeed: recipes,
+					pageInfo: {
+						nextPageCursor: hasNextPage ? recipes[recipes.length - 1].id : null,
+						hasNextPage
+					}
+				};
 			} catch (error) {
 				console.log(error);
 				throw error;

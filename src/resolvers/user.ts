@@ -11,14 +11,22 @@ export = {
 	Query: {
 		getUsers: combineResolvers(isAuthenticated, async (_, {cursor, limit = 10}) => {
 			try {
-				const query = {
-					take: limit
+				let query = {
+					take: limit + 1
 				};
 				if (cursor) {
 					query['where'] = `id > ${cursor}`;
 				}
-				const users = await getRepository(User).find(query);
-				return users.sort(compareIdInt);
+				let users = (await getRepository(User).find(query)).sort(compareIdInt);
+				const hasNextPage = users.length > limit;
+				users = hasNextPage ? users.slice(0, -1) : users;
+				return {
+					userFeed: users,
+					pageInfo: {
+						nextPageCursor: hasNextPage ? users[users.length -1].id : null,
+						hasNextPage
+					}
+				};
 			} catch (error) {
 				console.log(error);
 				throw(error);
