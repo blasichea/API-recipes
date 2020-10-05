@@ -1,4 +1,4 @@
-import {getRepository} from "typeorm";
+import {getRepository, MoreThan} from "typeorm";
 import {combineResolvers} from "graphql-resolvers";
 import {isAuthenticated} from "./middleware";
 import {Category} from "../entity/category";
@@ -13,7 +13,7 @@ export = {
 					relations: ["recipes"]
 				}
 				if (cursor) {
-					query['where'] = `id > ${cursor}`;
+					query['where'] = {id: MoreThan(cursor)};
 				}
 				let categories = (await getRepository(Category).find(query)).sort(compareIdInt);
 				const hasNextPage = categories.length > limit;

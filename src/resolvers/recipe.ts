@@ -1,4 +1,4 @@
-import {getRepository} from "typeorm";
+import {getRepository, MoreThan} from "typeorm";
 import {combineResolvers} from "graphql-resolvers";
 import {Recipe} from "../entity/recipe";
 import {isAuthenticated, isMyRecipe} from "./middleware";
@@ -13,7 +13,7 @@ export = {
 					relations:["category", "user"]
 				}
 				if (cursor) {
-					query['Recipe'] = {where: `id > ${cursor}`};
+					query['where'] = {id: MoreThan(cursor)};
 				}
 				let recipes = (await getRepository(Recipe).find(query)).sort(compareIdString);
 				const hasNextPage = recipes.length > limit;
@@ -45,11 +45,13 @@ export = {
 		getMyRecipes: combineResolvers(isAuthenticated, async (_, {cursor, limit = 10}, {userId}) => {
 			try {
 				let query = {
-					user: userId,
-					take: limit + 1
-				}
+					take: limit + 1,
+					relations: ["category"]
+				};
 				if (cursor) {
-					query['Recipe'] = {where: `id > ${cursor}`};
+					query['where'] = {user: userId, id: MoreThan(cursor)}
+				} else {
+					query['where'] = {user: userId};
 				}
 				let recipes = (await getRepository(Recipe).find(query)).sort(compareIdString);
 				const hasNextPage = recipes.length > limit;

@@ -15,7 +15,7 @@ export = {
 					take: limit + 1
 				};
 				if (cursor) {
-					query['where'] = `id > ${cursor}`;
+					query['where'] = {id: MoreThan(cursor)};
 				}
 				let users = (await getRepository(User).find(query)).sort(compareIdInt);
 				const hasNextPage = users.length > limit;
