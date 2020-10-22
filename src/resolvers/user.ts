@@ -10,8 +10,15 @@ export = {
 	Query: {
 		getUsers: combineResolvers(isAuthenticated, async (_, {skip = 0, limit = 10}) => {
 			try {
-				const users = await getRepository(User).find();
-				return users.sort(compareIdInt).slice(skip, skip+limit);
+				const users = await getRepository(User).find({
+					order: {
+						id: "ASC"
+					},
+					relations: ["recipes"],
+					skip: skip,
+					take: limit
+				});
+				return users;
 			} catch (error) {
 				console.log(error);
 				throw(error);

@@ -8,8 +8,15 @@ export = {
 	Query: {
 		getRecipes: combineResolvers(isAuthenticated, async (_, {skip = 0, limit = 10}) => {
 			try {
-				const result = await getRepository(Recipe).find({relations:["category", "user"]})
-				return result.sort(compareIdString).slice(skip, skip+limit);
+				const result = await getRepository(Recipe).find({
+					order: {
+						id: "ASC"
+					},
+					relations: ["category", "user"],
+					skip: skip,
+					take: limit
+				});
+				return result;
 			} catch (error) {
 				console.log(error);
 				throw error;
@@ -29,8 +36,18 @@ export = {
 		}),
 		getMyRecipes: combineResolvers(isAuthenticated, async (_, {skip = 0, limit = 10}, {userId}) => {
 			try {
-				const recipes = await getRepository(Recipe).find({user: userId});
-				return recipes.sort(compareIdString).slice(skip, skip+limit);
+				const recipes = await getRepository(Recipe).find({
+					relations: ["category", "user"],
+					where: {
+						user: userId
+					},
+					order: {
+						id: "ASC"
+					},
+					skip: skip,
+					take: limit
+				});
+				return recipes;
 			} catch (error) {
 				console.log(error);
 				throw error;

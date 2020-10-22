@@ -8,8 +8,15 @@ export = {
 	Query: {
 		getCategories: combineResolvers(isAuthenticated, async (_, {skip = 0, limit = 10}) => {
 			try {
-				const result = await getRepository(Category).find({relations: ["recipes"]});
-				return result.sort(compareIdInt).slice(skip, skip+limit);
+				const result = await getRepository(Category).find({
+					order: {
+						id: "ASC"
+					},
+					relations: ["recipes"],
+					skip: skip,
+					take: limit
+				});
+				return result;
 			} catch (error) {
 				console.log(error);
 				throw error;
